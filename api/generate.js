@@ -4,10 +4,11 @@ module.exports = async (req, res) => {
   if (!prompt || typeof prompt !== 'string' || prompt.length > 12000)
     return res.status(400).json({ error: 'Invalid prompt' });
   const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+  console.log('Key present:', !!process.env.GEMINI_API_KEY, 'length:', (process.env.GEMINI_API_KEY || '').trim().length);
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+      headers: { 'content-type': 'application/json', 'x-goog-api-key': (process.env.GEMINI_API_KEY || '').trim() },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: { maxOutputTokens: 4096 },
